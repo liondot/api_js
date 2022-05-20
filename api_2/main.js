@@ -22,7 +22,7 @@ const getNewsByTopic = async(event) => {
   let header = new Headers({
     'x-api-key':'YyyhWHPrmOjfy1L6CSxpnoxdXI9Pr1LRkq9eeUR5eVA'
   })
-  let response = await fetch(url, {headers:header});
+  let response = await fetch(url, {headers:header})
   let data = await response.json();
   news = data.articles;
 
