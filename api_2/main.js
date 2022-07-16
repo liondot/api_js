@@ -1,5 +1,10 @@
 
 let news = [];
+let menus = document.querySelectorAll('.menus button')
+
+menus.forEach((menu) => menu.addEventListener("click", (event => getNewsByTopic(event))))
+
+console.log("menu에 있는 버튼",menus)
 const getLatestNews = async() => {
   let url = new URL(`https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&topic=business&page_size=10`)
   let header = new Headers({"x-api-key": "7e5MmopN4uLr2-sEBt-sYPzqM57FC8TBYZJjjQkXNXk",})
@@ -14,6 +19,19 @@ const getLatestNews = async() => {
 }
 
 getLatestNews();
+
+const getNewsByTopic = async(event) => {
+
+  let topic = event.target.textContent.toLowerCase();
+  let url = new URL(`https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10&topic=${topic}`)
+  let header = new Headers({"x-api-key": "7e5MmopN4uLr2-sEBt-sYPzqM57FC8TBYZJjjQkXNXk",})
+  let response = await fetch(url, { headers: header });
+  let data = await response.json();
+  news = data.articles;
+  render()
+
+  console.log("data",data)
+}
 
 const render = () => {
   let newsHTML = ''
