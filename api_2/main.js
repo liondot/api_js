@@ -22,12 +22,25 @@ const getLatestNews = async() => {
 }
 
 const getNews = async () => {
-  let header = new Headers({"x-api-key": "7e5MmopN4uLr2-sEBt-sYPzqM57FC8TBYZJjjQkXNXk",})
-  let response = await fetch(url, { headers: header });
-  let data = await response.json();
-  news = data.articles;
-  render()
-}
+
+  try {
+    let header = new Headers({"x-api-key": "7e5MmopN4uLr2-sEBt-sYPzqM57FC8TBYZJjjQkXNXk",})
+    let response = await fetch(url, { headers: header });
+    let data = await response.json();
+   
+    if(response.status == 200) {
+      news = data.articles;
+      console.log(news)
+    render()
+
+    } else {
+      throw new Error(data.message)
+    }
+  }catch(error) {
+    console.log("잡힌 에러는", error.message);
+    errorRender(error.message)
+  }
+};
 
 getLatestNews();
 
