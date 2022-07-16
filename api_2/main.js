@@ -2,13 +2,14 @@
 let news = [];
 let menus = document.querySelectorAll('.menus button');
 let searchBtn = document.getElementById('search_button');
+let url;
 
 
 menus.forEach((menu) => menu.addEventListener("click", (event => getNewsByTopic(event))))
 
 console.log("menu에 있는 버튼",menus)
 const getLatestNews = async() => {
-  let url = new URL(`https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&topic=business&page_size=10`)
+   url = new URL(`https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&topic=business&page_size=10`)
   let header = new Headers({"x-api-key": "7e5MmopN4uLr2-sEBt-sYPzqM57FC8TBYZJjjQkXNXk",})
   let response = await fetch(url, { headers: header }) //데이터를 보내는 방식은 여러개가 있는데 ajax, http, fetch가 있다. 
   // 위에 사용한 fetch는 서버와 통신을 해야 돼서 기다려야 함 
@@ -20,19 +21,21 @@ const getLatestNews = async() => {
   render()
 }
 
-getLatestNews();
-
-const getNewsByTopic = async(event) => {
-
-  let topic = event.target.textContent.toLowerCase();
-  let url = new URL(`https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10&topic=${topic}`)
+const getNews = async () => {
   let header = new Headers({"x-api-key": "7e5MmopN4uLr2-sEBt-sYPzqM57FC8TBYZJjjQkXNXk",})
   let response = await fetch(url, { headers: header });
   let data = await response.json();
   news = data.articles;
   render()
+}
 
-  console.log("data",data)
+getLatestNews();
+
+const getNewsByTopic = async (event) => {
+
+  let topic = event.target.textContent.toLowerCase();
+   url = new URL(`https://api.newscatcherapi.com/v2/latest_headlines?countries=KR&page_size=10&topic=${topic}`)
+  getNews()
 }
 
 const getNewsByKeyword = async () => {
@@ -44,13 +47,8 @@ const getNewsByKeyword = async () => {
   // 6. 데이터 보여주기 
 
   let keyword = document.getElementById('search_input').value;
-  let url = new URL(`https://api.newscatcherapi.com/v2/search?q=${keyword}&page_size=10`)
-  let header = new Headers({"x-api-key": "7e5MmopN4uLr2-sEBt-sYPzqM57FC8TBYZJjjQkXNXk",})
-  let response = await fetch(url, { headers: header });
-  let data = await response.json();
-  news = data.articles;
-  render()
-
+   url = new URL(`https://api.newscatcherapi.com/v2/search?q=${keyword}&page_size=10`)
+   getNews()
 }
 
 const render = () => {
