@@ -1,6 +1,8 @@
 
 let news = [];
-let menus = document.querySelectorAll('.menus button')
+let menus = document.querySelectorAll('.menus button');
+let searchBtn = document.getElementById('search_button');
+
 
 menus.forEach((menu) => menu.addEventListener("click", (event => getNewsByTopic(event))))
 
@@ -33,6 +35,24 @@ const getNewsByTopic = async(event) => {
   console.log("data",data)
 }
 
+const getNewsByKeyword = async () => {
+  // 1. 검색 키워드 읽어오기 
+  // 2. url에 검색 키워드 부치기 
+  // 3. 헤더 준비 
+  // 4. url 부르기 
+  // 5. 데이터 가져오기 
+  // 6. 데이터 보여주기 
+
+  let keyword = document.getElementById('search_input').value;
+  let url = new URL(`https://api.newscatcherapi.com/v2/search?q=${keyword}&page_size=10`)
+  let header = new Headers({"x-api-key": "7e5MmopN4uLr2-sEBt-sYPzqM57FC8TBYZJjjQkXNXk",})
+  let response = await fetch(url, { headers: header });
+  let data = await response.json();
+  news = data.articles;
+  render()
+
+}
+
 const render = () => {
   let newsHTML = ''
   newsHTML = news.map((item) => {
@@ -53,3 +73,5 @@ const render = () => {
 
   document.getElementById("news_board").innerHTML = newsHTML;
 }
+
+searchBtn.addEventListener('click', getNewsByKeyword)
