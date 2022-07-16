@@ -27,6 +27,8 @@ const getLatestNews = async() => {
 const getNews = async () => {
   try {
   let header = new Headers({"x-api-key": "7e5MmopN4uLr2-sEBt-sYPzqM57FC8TBYZJjjQkXNXk",})
+  url.searchParams.set('page', page); //&page=
+  console.log("url은", url)
   let response = await fetch(url, { headers: header });
   let data = await response.json();
 
@@ -107,13 +109,19 @@ const pagenation = () => {
   // first~last 페이지 프린트 
 
   for(let i = first; i <= last; i++) {
-    pagenationHTML += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`
+    pagenationHTML += `<li class="page-item"><a class="page-link" href="#" onclick="moveToPage(${i})">${i}</a></li>`
   }
   
   document.querySelector(".pagination").innerHTML = pagenationHTML;
 }
 
+const moveToPage = (pageNum) => {
+  // 1. 이동하고 싶은 페이지를 알아야함 
+  page = pageNum; 
+  // console.log(page);
+  // 2. 이동하고 싶은 페이지를 가지고 api를 다시 호출 
 
+}
 
 searchBtn.addEventListener('click', getNewsByKeyword)
 getLatestNews();
