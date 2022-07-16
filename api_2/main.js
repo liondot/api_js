@@ -1,5 +1,7 @@
 
 let news = [];
+let page = 1; 
+let total_page = 0; 
 let menus = document.querySelectorAll('.menus button');
 let searchBtn = document.getElementById('search_button');
 let url;
@@ -14,7 +16,6 @@ const getLatestNews = async() => {
   let response = await fetch(url, { headers: header }) //데이터를 보내는 방식은 여러개가 있는데 ajax, http, fetch가 있다. 
   // 위에 사용한 fetch는 서버와 통신을 해야 돼서 기다려야 함 
   let data = await response.json()
-  console.log("this is data",data)
   news = data.articles;
   console.log(news)
 
@@ -22,14 +23,32 @@ const getLatestNews = async() => {
 }
 
 const getNews = async () => {
+  try {
   let header = new Headers({"x-api-key": "7e5MmopN4uLr2-sEBt-sYPzqM57FC8TBYZJjjQkXNXk",})
   let response = await fetch(url, { headers: header });
   let data = await response.json();
-  news = data.articles;
-  render()
+
+  if(response.status == 200) {
+    if(data.total_hits == 0) {
+      throw new Error("검색된 결과값이 없습니다.")
+    }
+    console.log("받는 데이터가 뭐지?", data)
+    news = data.articles;
+    total_page = data.total_page;
+    page = data.page;
+    console.log(news);
+    render()
+    pagenation()
+  } else {
+    throw new Errro (data.message);
+  }
+} catch (error) {
+  console.log("잡힌 에러는", error.message);
+  errorRender(error.message)
 }
 
-getLatestNews();
+};
+
 
 const getNewsByTopic = async (event) => {
 
@@ -72,4 +91,27 @@ const render = () => {
   document.getElementById("news_board").innerHTML = newsHTML;
 }
 
+const pagenation = () => {
+  let pagenationHTML = ``;
+  // pagenation 작업할 때 알아야 할 정보 
+  // total_page 정보 
+  // page 정보
+  // page group 찾기 
+  let pageGroup = Math.ceil(page / 5);
+  // last 페이지가 뭔지 
+  let last = pageGroup * 5
+  // first 페이지가 뭔지 
+  let first = last - 4
+  // first~last 페이지 프린트 
+
+  for(let i = first; i <= last; i++) {
+    pagenationHTML += `<li class="page-item"><a class="page-link" href="#">${i}</a></li>`
+  }
+  
+  document.querySelector(".pagination").innerHTML = pagenationHTML;
+}
+
+
+
 searchBtn.addEventListener('click', getNewsByKeyword)
+getLatestNews();
